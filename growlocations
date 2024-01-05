@@ -1,0 +1,29 @@
+# importing neccessary pakages
+import pandas as pd
+import matplotlib.pyplot as plt
+import numpy as np
+# reading the dataframe
+sensor_df = pd.read_csv("GrowLocations.csv")
+# storing the lat and long ranges as lists for future refernce
+Lat_range = (50.681, 57.985)
+Long_range = (-10.592, 1.6848)
+# the latitude and longtitude columns are labelled incorrectly, therefore i switches them 
+sensor_df = sensor_df.rename(columns = {"Latitude":"Longitude", "Longitude":"Latitude"})
+# dropping duplicate rows to avoid overcrowding
+sensor_df = sensor_df.drop_duplicates(subset = ["Serial"]).reset_index(drop=True)
+# Filtering the dataframe to fit the previously defined ranges of latitude and longtitude
+sensor_df = sensor_df[(sensor_df["Latitude"] > Lat_range[0]) & (sensor_df["Latitude"] < Lat_range[1])]
+sensor_df = sensor_df[(sensor_df["Longitude"] > Long_range[0]) & (sensor_df["Longitude"] < Long_range[1])]
+# reading the uk map given
+uk_map = plt.imread("map7.png")
+# setting the figize to resemble the map in the example
+plt.figure(figsize=(6, 7))
+# creating a scatterplot to plot the points with the blue color as shown in the example
+plt.scatter(sensor_df.Longitude, sensor_df.Latitude, marker='o', color='blue')
+# plotting the uk map and setting the boundaries
+plt.imshow(uk_map, extent=[-10.592, 1.6848, 50.681, 57.985])
+# adding labels and title
+plt.xlabel('Longitude')
+plt.ylabel('Latitude')
+plt.title('Plotting Grow data')
+plt.show()
